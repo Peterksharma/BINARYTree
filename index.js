@@ -1,5 +1,7 @@
 //Making a Binary Search Tree
 
+//Tree is almost working but the 45 has a red child, t
+
 
 //Rules <---
 //1. Every left child has a smaller value that its parent 
@@ -48,9 +50,9 @@ class RedBlackTree {
         return tempNode
     }
     flipNodeColor(node) {
-        node.color = 'red'
-        node.left.color = 'black'
-        node.right.color = "black"
+        node.color = node.color === 'red' ? 'black': 'red';
+        node.left.color = node.left.color === 'red' ? 'black': 'red';
+        node.right.color = node.right.color === 'red' ? 'black': 'red';
     }
     //Check the color of the node
     isNodeRed(node) {
@@ -76,26 +78,26 @@ class RedBlackTree {
             return newNode;
         }
     
-        if (this.isNodeRed(node.right) && !this.isNodeRed(node.left)) {
-            node = this.leftRotate(node);
-            console.log('This node has leftRotate')
-        }
-    
         if (newNode.data < node.data) {
             node.left = this.insertNode(node.left, newNode);
         } else if (newNode.data > node.data) {
             node.right = this.insertNode(node.right, newNode);
-            console.log('Node has been created.')
+            console.log(`'Node ${node.data} has been created.'`)
         }
     
-        if (this.isNodeRed(node.left) && this.isNodeRed(node.left.left)) {
+        if (this.isNodeRed(node.right) && !this.isNodeRed(node.left) && (!node.left || !this.isNodeRed(node.left.left))) {
+            node = this.leftRotate(node);
+            console.log(`'Node ${node.data} has been leftRotate'`)
+        }
+
+        if (this.isNodeRed(node.left) && this.isNodeRed(node.left.left) && !this.isNodeRed(node.right)) {
             node = this.rightRotate(node);
-            console.log('Node has been rightRotate')
+            console.log(`'Node ${node.data} has been rightRotate'`)
         }
     
         if (this.isNodeRed(node.left) && this.isNodeRed(node.right)) {
             this.flipNodeColor(node);
-            console.log(`'Node color has been flipped', ${node}`)
+            console.log(`'Node ${node.data} color has been flipped'`)
         }
         return node
     }
@@ -111,6 +113,7 @@ class RedBlackTree {
 
 
 
+//<-----Duplicate numbers arent working. I think data needs to be cleaned. Maybe use a hash table?
 //Seed data for RedBlackTree
 const RBT = new RedBlackTree();
 RBT.insert(11);
@@ -123,9 +126,16 @@ RBT.insert(5);
 RBT.insert(8);
 RBT.insert(4);
 RBT.insert(150);
-RBT.insert(25);
+RBT.insert(23);
 RBT.insert(18);
-RBT.insert(42);
+RBT.insert(41);
+RBT.insert(55);
+RBT.insert(85);
+RBT.insert(49);
+RBT.insert(151);
+RBT.insert(25);
+RBT.insert(12);
+RBT.insert(45);
 
 orderedPrint(RBT.root);
 // console.log(RBT.root)
@@ -140,7 +150,7 @@ function orderedPrint(node) {
         orderedPrint(node.left)
         console.log(node.data)
         orderedPrint(node.right)
-        console.log('Left node:', `${node.left}`, ', Right Node:', `${node.right}`, 'Node data: ', `${node.data}`)
+        console.log('Node data: ', `${node.data}`)
     }
 }
 
@@ -153,6 +163,7 @@ function printTree(node, level = 0) {
     printTree(node.left, level + 1);
     printTree(node.right, level + 1);
 }
+
 
 //prints the tree
 printTree(RBT.root);
